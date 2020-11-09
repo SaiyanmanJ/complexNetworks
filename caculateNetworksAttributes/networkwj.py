@@ -23,13 +23,14 @@ class Graph:
 
         self.clustering_of_nodes = [] # 节点聚类系数
         self.average_clustering_of_network = float("-inf") # 网络的聚类系数
-        self.betweennes_of_nodes = [] # 节点的介数
+        self.betweenness_of_nodes = {} # 节点的介数
         self.degree_histogram = [] # 度分布
         self.max_degree = -1 # 节点最大度
         self.average_shortest_path_length = float("-inf")
         self.all_shortest_path = {} # 网路中全部节点的最短路径
-        self.betweenness_centrality = {} # 每个节点的介数
         self.shortest_path_amount_through_node = {} # 存储经过节点i的最短路径条数
+
+
     def read_Data(self, path):
         "read node pair from txt and store Adjacency matrix"
         # create a  2-d list as a Adjacency matrix
@@ -186,26 +187,38 @@ class Graph:
     # 3.归一化->公式即可
     # 4.
     def get_betweenness_centrality(self): 
-        if len(self.betweenness_centrality) == 0:
+        if len(self.betweenness_of_nodes) == 0:
             self.betweenness_centrality = 0
             self.get_all_shortest_path()
 
             # 初始化 self.shortest_path_amount_through_node
             for i in self.nodes:
                 self.shortest_path_amount_through_node[i] = 0
-
+                self.betweenness_of_nodes[i] = 0
             # 计算每个节点的所经最短路径数量，但是数量多算了一倍 从i 到 j 和从 j 到 i是一样的路径，最后要除以2
-            for key1 in self.all_shortest_path:
-                for key2 in self.all_shortest_path[key1]: 
-                    for l in self.all_shortest_path[key1][key2]:
-                        for i in l[1:len(l) - 1]:
-                            self.shortest_path_amount_through_node[i] += 1
-            for node in self.nodes:
-                self.shortest_path_amount_through_node[node] /= 2
+            for s in self.all_shortest_path:
+                for t in self.all_shortest_path[s]:
+                    sti = {} # 临时存储 当前s和t 之间的的n条最短路径中 i 出现的次数
+                    st_amount = len(self.all_shortest_path[s][t]) # 得到 从 s 到 t的最短路径条数
+                    for l in self.all_shortest_path[s][t]:
+                        if s <= t: # 起点 编号 小于 终点编号，否则会重复计算
+                            for i in l[1:len(l) - 1]: # 去除起点和终点
+                                # self.shortest_path_amount_through_node[i] += 1
+                                if i not in sti:
+                                    sti[i] = 1
+                                else:
+                                    sti[i] += 1
+                    for key in sti:    
+                        self.betweenness_of_nodes[key] += sti[key] / st_amount  
+                    
+            
 
-        #return self.betweenness_centrality
+            # 归一化
+            for i in self.nodes:
+                self.betweenness_of_nodes[i] /= (self.get_number_of_nodes() - 1) * (self.get_number_of_nodes() - 2)* 1/2
+        return self.betweenness_of_nodes
         
-        return self.shortest_path_amount_through_node
+        #return self.shortest_path_amount_through_node
 
 
 

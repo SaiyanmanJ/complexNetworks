@@ -29,8 +29,6 @@ eps = 1e-15  # 小数点后10位
 # 对数器
 def verification(Gx, Gj): # 验证函数
 
-    '''
-
     # 1.节点数量验证
     print(f"节点数量验证 number_of_nodes() test: {Gx.number_of_nodes() == Gj.get_number_of_nodes()} 数量：{Gj.get_number_of_nodes()}\n")
 
@@ -113,9 +111,8 @@ def verification(Gx, Gj): # 验证函数
     print(Gj.get_average_shortest_path_length())
 
     # 8.2 两点之间最短路径序列
-    
-    nxpath = nx.shortest_path(Gx, source = 4, target = 5)
-    njpath = Gj.get_shortest_path(source = 4, target = 5)
+    nxpath = nx.shortest_path(Gx, source=4, target=5)
+    njpath = Gj.get_shortest_path(4, 5)
     flag = True
     flag = nxpath in njpath
     print(f"最短路径验证 shortest_path() test: {flag}")
@@ -138,11 +135,20 @@ def verification(Gx, Gj): # 验证函数
         f.write(str(nx.shortest_path(Gx)))  
     with open("nj_all_shortest_path.txt", 'w') as f:    
         f.write(str(Gj.get_all_shortest_path()))
-    '''
+    
 
     # 9. 节点介数验证 
+    flag = True
+    nxb = nx.betweenness_centrality(Gx)  
+    njb = Gj.get_betweenness_centrality()
 
-    # print(nx.betweenness_centrality(Gx))
+    for key in nxb:
+        if abs(nxb[key] - njb[key]) > eps:
+            flag = False
+            break
+
+    print(f"节点介数验证 betweenness_centrality test: {flag}")
+    #print(nx.betweenness_centrality(Gx))
     print(Gj.get_betweenness_centrality())
     # 
     
