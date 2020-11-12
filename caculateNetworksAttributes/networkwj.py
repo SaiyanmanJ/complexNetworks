@@ -18,6 +18,7 @@ class Graph:
         self.nodes = set([]) # 存储节点
         self.edges = [] # 存储边
         self.degree = [] # 每个节点的度
+        self.excess_degree = {} # 每个节点的余平均度
         self.average_degree = float("-inf") # 代表最小值
         self.density = float("-inf")
 
@@ -258,4 +259,17 @@ class Graph:
             # 标记ｔ节点为确定的最短路径点
             v[t] = True
         return path
+
+
+        # 节点的余平均度计算
+    def get_excess_average_degree(self):
+        if len(self.excess_degree) == 0:
+            self.get_degree()
+            
+            for node in self.nodes:
+                sum = 0
+                for i in self.adjacency_table[node]:
+                    sum += self.degree[i][1]
+                self.excess_degree[node] = sum/len(self.adjacency_table[node])
+        return self.excess_degree
 # %%

@@ -24,7 +24,7 @@ Gj.read_Data("networksInfo/dolphins.txt") # return a 2-d list
 
 
 # -------------------------------------------------------------测试正确性
-eps = 1e-15  # 小数点后10位
+eps = 1e-15  # 小数点后15位
 
 # 对数器
 def verification(Gx, Gj): # 验证函数
@@ -150,7 +150,11 @@ def verification(Gx, Gj): # 验证函数
     print(f"节点介数验证 betweenness_centrality test: {flag}")
     #print(nx.betweenness_centrality(Gx))
     print(Gj.get_betweenness_centrality())
-    # 
+    print()
+    
+    # 10. 节点余平均度
+    njead = Gj.get_excess_average_degree()
+    print(f"所有节点的余平均度：\n {njead}")
     
 # %%
 verification(Gx, Gj)
