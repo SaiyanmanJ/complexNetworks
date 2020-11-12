@@ -266,10 +266,10 @@ class Graph:
         if len(self.excess_degree) == 0:
             self.get_degree()
             
-            for node in self.nodes:
+            for node in self.nodes: # 取出节点
                 sum = 0
-                for i in self.adjacency_table[node]:
-                    sum += self.degree[i][1]
-                self.excess_degree[node] = sum/len(self.adjacency_table[node])
+                for i in self.adjacency_table[node]: # 节点的邻居节点
+                    sum += self.degree[i][1] # 邻居节点度相加
+                self.excess_degree[node] = sum/len(self.adjacency_table[node]) # 余平均度
         return self.excess_degree
 # %%
